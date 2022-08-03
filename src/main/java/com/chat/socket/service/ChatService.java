@@ -1,9 +1,11 @@
 package com.chat.socket.service;
 
 
+
+import com.chat.socket.Exception.CustomException;
+import com.chat.socket.Exception.ErrorCode;
 import com.chat.socket.model.ChatMessage;
 import com.chat.socket.model.ChatRoom;
-import com.chat.socket.model.dto.ChatMessageDetailDTO;
 import com.chat.socket.model.dto.ChatMessageSaveDTO;
 import com.chat.socket.repository.ChatRepository;
 import com.chat.socket.repository.ChatRoomRepository;
@@ -34,7 +36,7 @@ public class ChatService {
         template.convertAndSend("/sub/chat/room/" + message.getRoomId(), message);
 
         ChatRoom chatRoom = crr.findByRoomIdAndAndUser_Username(message.getRoomId(), message.getWriter())
-                .orElseThrow(() -> new RuntimeException("채팅방을 찾을 수 없습니다"));
+                .orElseThrow(() ->  new CustomException(ErrorCode.CAN_NOT_CREATE_ROOM));
         cr.save(ChatMessage.toChatEntity(message, chatRoom));
     }
     @Transactional
@@ -43,7 +45,7 @@ public class ChatService {
 
         // DB에 채팅내용 저장
         ChatRoom chatRoom = crr.findByRoomIdAndAndUser_Username(message.getRoomId(), message.getWriter())
-                .orElseThrow(() -> new RuntimeException("채팅방을 찾을 수 없습니다"));
+                .orElseThrow(() -> new CustomException(ErrorCode.CAN_NOT_CREATE_ROOM));
         ChatMessageSaveDTO chatMessageSaveDTO = new ChatMessageSaveDTO(message.getRoomId(),message.getWriter(), message.getMessage());
         cr.save(ChatMessage.toChatEntity(chatMessageSaveDTO,chatRoom));
     }

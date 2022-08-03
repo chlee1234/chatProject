@@ -2,7 +2,6 @@ package com.chat.socket.model;
 
 
 import com.chat.socket.model.dto.ChatRoomDTO;
-import com.chat.socket.model.dto.ChatRoomDetailDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,7 +9,6 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Getter
@@ -32,6 +30,7 @@ public class ChatRoom {
     private String participants;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "users_id")
     private User user;
 
     @OneToMany(mappedBy = "chatRoom", fetch = FetchType.EAGER, cascade = CascadeType.ALL)

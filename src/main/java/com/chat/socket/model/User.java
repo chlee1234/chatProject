@@ -1,36 +1,77 @@
 package com.chat.socket.model;
 
+import com.chat.socket.model.dto.UserReturnDto;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@Entity
 @Table(name = "USERS")
 public class User {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
 
+    @Id  //ID 할당 방법 1.직접 넣는 방식 (Setter, 생성자) 2.(JPA나)DB에게 할당 책임을 전가. (@GenerateValue)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, unique = true)
     private String username;
-//    private String nickname;
-//    private String password;
-//    private String profileImage;
-//    private String proflieBgimage;
-//    private String userStatus;
-//    private String encodeUsername;
+    @Column(nullable = false, unique = true)
+    private String encodeUserName;
+    @Column(nullable = false)
+    private String password;
+    @Column(nullable = false)
+    private String nickname;
+    @Column(nullable = false)
+    private String realname;
 
+    @OneToMany(mappedBy = "user",fetch = FetchType.LAZY,cascade = CascadeType.ALL)//mappedBy 연관관계의 주인이 아니다(나는 FK가 아니에요) DB에 컬럼 만들지 마세요.
+    private List<Friend> friends = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Column
+    private String userStatus;
 
-    @OneToMany(mappedBy = "user")
-    private List<User> friends = new ArrayList<>();
+    @Column(length = 65535)
+    private String profileImage;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @Column(length = 65535)
+    private String profileBgImage;
+
+    @OneToMany(mappedBy = "user" , fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<ChatRoom> chatRoomList = new ArrayList<>();
+
+    public User(String username, String password,
+                String nickname, String encodeUserName, String realname, String profileImage) {
+        this.username = username;
+        this.password = password;
+        this.nickname = nickname;
+        this.encodeUserName = encodeUserName;
+        this.realname = realname;
+        this.profileImage = profileImage;
+    }
+
+    public User(String username, String usernickname) {
+        this.username = username;
+        this.nickname = usernickname;
+    }
+
+    public User(UserReturnDto userReturnDto)
+    {
+        this.id = userReturnDto.getId();
+        this.username = userReturnDto.getUsername();
+        this.password = userReturnDto.getPassword();
+        this.nickname = userReturnDto.getNickname();
+        this.encodeUserName = userReturnDto.getEncodeUserName();
+        this.userStatus = userReturnDto.getUserStatus();
+        this.profileImage = userReturnDto.getProfileImage();
+        this.profileBgImage = userReturnDto.getProfileBgImage();
+        this.realname = userReturnDto.getRealname();
+        this.friends = userReturnDto.getFriends();
+    }
 }

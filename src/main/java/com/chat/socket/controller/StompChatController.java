@@ -1,10 +1,11 @@
 package com.chat.socket.controller;
 
 import com.chat.socket.model.dto.ChatMessageSaveDTO;
+import com.chat.socket.security.UserDetailsImpl;
 import com.chat.socket.service.ChatService;
-import com.chat.socket.model.dto.ChatMessageDetailDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 
 @Controller
@@ -16,12 +17,14 @@ public class StompChatController {
     //stompConfig 에서 설정한 applicationDestinationPrefixes 와 @MessageMapping 경로가 병합됨
     //"/pub/chat/enter"
     @MessageMapping(value = "/chat/enter")
-    public void enter(ChatMessageSaveDTO message) {
+    public void enter(ChatMessageSaveDTO message,
+                      @AuthenticationPrincipal UserDetailsImpl userDetails) {
         cs.enterChatRoom(message);
     }
 
     @MessageMapping(value = "/chat/message")
-    public void message(ChatMessageSaveDTO message) {
+    public void message(ChatMessageSaveDTO message,
+                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
         cs.sendChat(message);
     }
 
