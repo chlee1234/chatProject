@@ -2,7 +2,7 @@
 
 ## 프로젝트 기획
 
-[KoKoa-Clone](https://www.notion.so/SA-5-9828ef7666c74dc3864f79fb5061a7f9)
+[KoKoa-Clone-GitHub](https://www.notion.so/SA-5-9828ef7666c74dc3864f79fb5061a7f9)
 
 ### 프로젝트 설명
 카카오톡 서비스를 클론하므로써 서비스를 이루고 있는 아키텍처에 대한 학습 및 구현
